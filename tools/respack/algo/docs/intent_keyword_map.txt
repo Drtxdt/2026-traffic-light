@@ -1,0 +1,23 @@
+1_0:xiao3 ai4 tong2 xue2
+1_1:xiao3 ai4 tong2 xue2
+2_0:bian4 wei2 hong2 deng1
+2_1:bian4 wei2 hong2 deng1
+2_2:bian4 cheng2 hong2 deng1
+3_0:bian4 wei2 zhi2 xing2
+3_1:bian4 wei2 zhi2 xing2
+3_2:bian4 cheng2 zhi2 xing2
+4_0:bian4 wei2 zuo3 zhuan3
+4_1:bian4 wei2 zuo3 zhuan3
+4_2:bian4 cheng2 zuo3 zhuan3
+5_0:bian4 wei2 you4 zhuan3
+5_1:bian4 wei2 you4 zhuan3
+5_2:bian4 cheng2 you4 zhuan3
+6_0:da4 dian3 sheng1
+6_1:da4 dian3 sheng1
+6_2:da4 sheng1
+7_0:xiao3 dian3 sheng1
+7_1:xiao3 dian3 sheng1
+7_2:xiao3 sheng1
+8_0:tui4 chu1 shi2 bie2
+8_1:tui4 chu1 shi2 bie2
+8_2:tui4 chu1
