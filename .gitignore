@@ -1,1 +1,34 @@
-build
+# Build directory
+build/
+
+# Intermediate compiled objects
+*.o
+*.obj
+
+# Build output artifacts (generated inside build/)
+*.symb
+*.relf
+*.dasm
+
+# Dependency files
+*.d
+*.deps
+
+# Ninja
+.ninja_*
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
