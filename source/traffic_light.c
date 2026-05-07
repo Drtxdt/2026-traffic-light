@@ -56,26 +56,40 @@ static void traffic_light_draw_straight(void)
     traffic_light_rect(7, 8, 5, 14, k_green);
     traffic_light_hline(7, 8, 1, k_green);
     traffic_light_hline(6, 9, 2, k_green);
-    traffic_light_hline(5, 10, 3, k_green);
-    traffic_light_hline(4, 11, 4, k_green);
+    traffic_light_hline(5, 6, 3, k_green);
+    traffic_light_hline(9, 10, 3, k_green);
+    traffic_light_hline(4, 5, 4, k_green);
+    traffic_light_hline(10, 11, 4, k_green);
+    traffic_light_hline(3, 4, 5, k_green);
+    traffic_light_hline(11, 12, 5, k_green);
 }
 
 static void traffic_light_draw_left(void)
 {
     traffic_light_rect(5, 14, 7, 8, k_green);
     traffic_light_vline(1, 7, 8, k_green);
-    traffic_light_vline(2, 6, 9, k_green);
-    traffic_light_vline(3, 5, 10, k_green);
-    traffic_light_vline(4, 4, 11, k_green);
+    traffic_light_vline(2, 6, 7, k_green);
+    traffic_light_vline(2, 8, 9, k_green);
+    traffic_light_vline(3, 5, 6, k_green);
+    traffic_light_vline(3, 9, 10, k_green);
+    traffic_light_vline(4, 4, 5, k_green);
+    traffic_light_vline(4, 10, 11, k_green);
+    traffic_light_vline(5, 3, 4, k_green);
+    traffic_light_vline(5, 11, 12, k_green);
 }
 
 static void traffic_light_draw_right(void)
 {
     traffic_light_rect(1, 10, 7, 8, k_green);
     traffic_light_vline(14, 7, 8, k_green);
-    traffic_light_vline(13, 6, 9, k_green);
-    traffic_light_vline(12, 5, 10, k_green);
-    traffic_light_vline(11, 4, 11, k_green);
+    traffic_light_vline(13, 6, 7, k_green);
+    traffic_light_vline(13, 8, 9, k_green);
+    traffic_light_vline(12, 5, 6, k_green);
+    traffic_light_vline(12, 9, 10, k_green);
+    traffic_light_vline(11, 4, 5, k_green);
+    traffic_light_vline(11, 10, 11, k_green);
+    traffic_light_vline(10, 3, 4, k_green);
+    traffic_light_vline(10, 11, 12, k_green);
 }
 
 void traffic_light_init(void)
