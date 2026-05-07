@@ -6,7 +6,6 @@
 #define WS2812_PAD             CSK_IOMUX_PAD_A
 #define WS2812_PIN             10U
 #define WS2812_PIN_MASK        CSK_GPIO_PIN10
-#define WS2812_LED_COUNT       (16U * 16U)
 
 static uint32_t s_cycles_per_bit;
 static uint32_t s_cycles_t0h;
@@ -89,6 +88,22 @@ void ws2812_init(void)
     ws2812_wait_cycles(s_cycles_reset);
 }
 
+void ws2812_show_rgb_frame(const ws2812_rgb_t *pixels, uint32_t count)
+{
+    const uint32_t mstatus = __RV_CSR_READ(CSR_MSTATUS);
+
+    __RV_CSR_CLEAR(CSR_MSTATUS, MSTATUS_MIE);
+    for (uint32_t i = 0; i < count; i++) {
+        ws2812_send_grb(pixels[i].green, pixels[i].red, pixels[i].blue);
+    }
+    IP_GPIO->REG_DOUTCLEAR.all = WS2812_PIN_MASK;
+    ws2812_wait_cycles(s_cycles_reset);
+
+    if (mstatus & MSTATUS_MIE) {
+        __RV_CSR_SET(CSR_MSTATUS, MSTATUS_MIE);
+    }
+}
+
 void ws2812_show_solid_rgb(uint8_t red, uint8_t green, uint8_t blue)
 {
     const uint32_t mstatus = __RV_CSR_READ(CSR_MSTATUS);
@@ -103,4 +118,9 @@ void ws2812_show_solid_rgb(uint8_t red, uint8_t green, uint8_t blue)
     if (mstatus & MSTATUS_MIE) {
         __RV_CSR_SET(CSR_MSTATUS, MSTATUS_MIE);
     }
+}
+
+void ws2812_clear(void)
+{
+    ws2812_show_solid_rgb(0, 0, 0);
 }

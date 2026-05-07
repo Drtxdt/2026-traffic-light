@@ -8,6 +8,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "ls_app_algo.h"
+#include "traffic_light.h"
 
 #define TAG "cfg_parser"
 
@@ -432,6 +433,7 @@ bool parser_command_item(const char *keyword, const ls_uart_msg_t *recv_msg)
             if (keyword_compare(keyword, strlen(keyword), (const char *)tmp_item.keywords, tmp_item.keyword_size)) {
                 if (s_reply_switch != 0) active_play_audios(tmp_item.play_type, (const char *)tmp_item.play_audio, tmp_item.audio_size);
                 uart_send_data((const char *)tmp_item.send_pro_buf, tmp_item.send_pro_len);
+                traffic_light_show_command_index(i);
 				return true;
 			}
 		} else if (recv_msg) {

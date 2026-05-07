@@ -4,7 +4,7 @@
 #include "lisa_thread.h"
 #include "task_algo.h"
 #include "ls_app_device.h"
-#include "ws2812.h"
+#include "traffic_light.h"
 
 #define ALGO_RAM_INST_MEM_SIZE      (113792) //115840 - 2k
 #define ALGO_VOICE_BIN_MEM_SIZE     (2048) //2k
@@ -35,8 +35,7 @@ int32_t get_vcc_power()
 
 int main(int argc, char *argv[])
 {
-    ws2812_init();
-    ws2812_show_solid_rgb(64, 0, 0);
+    traffic_light_init();
 
     listen_client_create((char *)s_algo_share_mem, (char *)s_algo_voice_mem);
 
