@@ -5,6 +5,22 @@
 #define TRAFFIC_LIGHT_DIM       WS2812_MATRIX_WIDTH
 #define TRAFFIC_LIGHT_BRIGHT    64U
 
+/*
+ * Matrix wiring map.
+ *
+ * Logical coordinates use x=0..15 from left to right, y=0..15 from top to
+ * bottom. The physical LED stream is configured for a panel whose first LED is
+ * at the top-right corner, with row 0 running right-to-left and subsequent
+ * rows in serpentine order.
+ *
+ * Manual tuning:
+ * - If left/right are mirrored, change TRAFFIC_LIGHT_FIRST_ROW_RIGHT_TO_LEFT.
+ * - If every other row is shifted/reversed incorrectly, change
+ *   TRAFFIC_LIGHT_SERPENTINE.
+ */
+#define TRAFFIC_LIGHT_FIRST_ROW_RIGHT_TO_LEFT  1U
+#define TRAFFIC_LIGHT_SERPENTINE               1U
+
 static ws2812_rgb_t s_frame[WS2812_LED_COUNT];
 
 static const ws2812_rgb_t k_black = {0, 0, 0};
@@ -13,7 +29,20 @@ static const ws2812_rgb_t k_green = {0, TRAFFIC_LIGHT_BRIGHT, 0};
 
 static uint32_t traffic_light_index(uint32_t x, uint32_t y)
 {
-    return y * TRAFFIC_LIGHT_DIM + x;
+    uint32_t physical_x = x;
+    uint32_t row_right_to_left = TRAFFIC_LIGHT_FIRST_ROW_RIGHT_TO_LEFT;
+
+#if TRAFFIC_LIGHT_SERPENTINE
+    if ((y & 1U) != 0U) {
+        row_right_to_left = !row_right_to_left;
+    }
+#endif
+
+    if (row_right_to_left) {
+        physical_x = (WS2812_MATRIX_WIDTH - 1U) - x;
+    }
+
+    return y * TRAFFIC_LIGHT_DIM + physical_x;
 }
 
 static void traffic_light_fill(ws2812_rgb_t color)

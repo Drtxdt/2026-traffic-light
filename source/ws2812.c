@@ -62,7 +62,7 @@ static void ws2812_update_timing(void)
     s_cycles_per_bit = (cycles_per_us * 5U) / 4U;     // 1.25 us
     s_cycles_t0h = (cycles_per_us * 35U) / 100U;      // 0.35 us
     s_cycles_t1h = (cycles_per_us * 70U) / 100U;      // 0.70 us
-    s_cycles_reset = cycles_per_us * 100U;            // 100 us
+    s_cycles_reset = cycles_per_us * 300U;            // >= 280 us latch/reset margin
 
     if (s_cycles_t0h == 0U) {
         s_cycles_t0h = 1U;
@@ -93,6 +93,8 @@ void ws2812_show_rgb_frame(const ws2812_rgb_t *pixels, uint32_t count)
     const uint32_t mstatus = __RV_CSR_READ(CSR_MSTATUS);
 
     __RV_CSR_CLEAR(CSR_MSTATUS, MSTATUS_MIE);
+    IP_GPIO->REG_DOUTCLEAR.all = WS2812_PIN_MASK;
+    ws2812_wait_cycles(s_cycles_reset);
     for (uint32_t i = 0; i < count; i++) {
         ws2812_send_grb(pixels[i].green, pixels[i].red, pixels[i].blue);
     }
@@ -109,6 +111,8 @@ void ws2812_show_solid_rgb(uint8_t red, uint8_t green, uint8_t blue)
     const uint32_t mstatus = __RV_CSR_READ(CSR_MSTATUS);
 
     __RV_CSR_CLEAR(CSR_MSTATUS, MSTATUS_MIE);
+    IP_GPIO->REG_DOUTCLEAR.all = WS2812_PIN_MASK;
+    ws2812_wait_cycles(s_cycles_reset);
     for (uint32_t i = 0; i < WS2812_LED_COUNT; i++) {
         ws2812_send_grb(green, red, blue);
     }
