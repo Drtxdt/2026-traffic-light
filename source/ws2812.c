@@ -7,6 +7,13 @@
 #define WS2812_PIN             10U
 #define WS2812_PIN_MASK        CSK_GPIO_PIN10
 
+#define WS2812_BIT_NS          1250U
+#define WS2812_T0H_NS          320U
+#define WS2812_T1H_NS          720U
+#define WS2812_RESET_US        300U
+
+#define WS2812_ALWAYS_INLINE   __attribute__((always_inline))
+
 static uint32_t s_cycles_per_bit;
 static uint32_t s_cycles_t0h;
 static uint32_t s_cycles_t1h;
@@ -25,7 +32,14 @@ static inline void ws2812_wait_cycles(uint32_t cycles)
     }
 }
 
-static void __fast__ ws2812_send_bit(uint32_t high_cycles)
+static inline uint32_t ws2812_ns_to_cycles(uint32_t cpu_hz, uint32_t ns)
+{
+    const uint32_t cycles_per_us = cpu_hz / 1000000U;
+
+    return ((cycles_per_us * ns) + 500U) / 1000U;
+}
+
+static inline void __fast__ WS2812_ALWAYS_INLINE ws2812_send_bit(uint32_t high_cycles)
 {
     const uint32_t start = ws2812_cycle32();
 
@@ -59,10 +73,10 @@ static void ws2812_update_timing(void)
     const uint32_t cpu_hz = BOARD_BOOTCLOCKRUN_CRM_CORE_CLK;
     const uint32_t cycles_per_us = cpu_hz / 1000000U;
 
-    s_cycles_per_bit = (cycles_per_us * 5U) / 4U;     // 1.25 us
-    s_cycles_t0h = (cycles_per_us * 35U) / 100U;      // 0.35 us
-    s_cycles_t1h = (cycles_per_us * 70U) / 100U;      // 0.70 us
-    s_cycles_reset = cycles_per_us * 300U;            // >= 280 us latch/reset margin
+    s_cycles_per_bit = ws2812_ns_to_cycles(cpu_hz, WS2812_BIT_NS);
+    s_cycles_t0h = ws2812_ns_to_cycles(cpu_hz, WS2812_T0H_NS);
+    s_cycles_t1h = ws2812_ns_to_cycles(cpu_hz, WS2812_T1H_NS);
+    s_cycles_reset = cycles_per_us * WS2812_RESET_US;
 
     if (s_cycles_t0h == 0U) {
         s_cycles_t0h = 1U;
