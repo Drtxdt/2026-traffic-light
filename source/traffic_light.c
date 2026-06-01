@@ -3,7 +3,7 @@
 #include "ws2812.h"
 
 #define TRAFFIC_LIGHT_DIM       WS2812_MATRIX_WIDTH
-#define TRAFFIC_LIGHT_BRIGHT    64U
+#define TRAFFIC_LIGHT_BRIGHT    8U
 
 /*
  * Matrix wiring map.
