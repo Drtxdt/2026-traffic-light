@@ -3,10 +3,17 @@
 ## National edition
 
 - Official flashing-tool file: `national/traffic-light-national.bin`
-- BIN SHA-256: `82F0FDE68821E2F1336FE28DF8BD4AEE44A58E723F1161A39242AE2BEA3E25F2`
+- BIN SHA-256: `BE8E276A81F18AF5DB106083BA05D338C0D44369E2FB27EB1AC50FE8304B7FFC`
 - Packaged image: `national/traffic-light-national.img`
-- IMG SHA-256: `D599F79F6696032954A45C88BC8929AD626CEFB76B592A0B0EBB5F6FEA346B90`
+- IMG SHA-256: `646760668471245A550153DC71F9619D9E3E869635370DD4A25D6EABAAE068E7`
 - Behavior: straight/left/right green arrow, then the same arrow in yellow after 2 seconds, then solid red after another 2 seconds.
+
+### National safe rollback
+
+- BIN: `national/rollback/traffic-light-national-safe-3CD54114.bin`
+- BIN SHA-256: `3CD54114ED5579E2CC55084AF4DBA4394B1B0DE0D74747B94D94D45D37CC7783`
+- IMG: `national/rollback/traffic-light-national-safe-3CD54114.img`
+- IMG SHA-256: `BE1B52DBEF636761E6E2FF6F44BA4300573741749E096E6685E28C505B45A0CE`
 
 ## Provincial edition
 

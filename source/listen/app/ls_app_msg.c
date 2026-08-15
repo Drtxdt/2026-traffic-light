@@ -2,6 +2,7 @@
 #include "appinc.h"
 #include "IOMuxManager.h"
 #include "Driver_GPIO.h"
+#include "traffic_light_config.h"
 #include "ls_app_msg.h"
 #include "lisa_mem.h"
 #include "lisa_log.h"
@@ -17,6 +18,7 @@ typedef struct msg_send_item
     uint32_t len;
 } msg_send_item_t;
 
+#if !TRAFFIC_LIGHT_AUTO_CYCLE
 static void* GPIOA_Handler = NULL;
 static bool io_high = false;
 static uint8_t g_tag_sw = 0; 
@@ -34,8 +36,9 @@ static void csk_gpio_pin_write()
 	} else {
 		io_high = true;
 	}
- 	GPIO_PinWrite(GPIOA_Handler, CSK_GPIO_PIN10, io_high?1:0); //1输出高电平 0输出低电平
+	GPIO_PinWrite(GPIOA_Handler, CSK_GPIO_PIN10, io_high?1:0); //1输出高电平 0输出低电平
 }
+#endif
 
 static int _handle_app_msg_send(void *arg)
 {
@@ -63,9 +66,11 @@ static int _handle_app_msg_send(void *arg)
 
 void ls_app_msg_send(LS_APP_MSG_TYPE type, const uint8_t *data, uint32_t len)
 {
+#if !TRAFFIC_LIGHT_AUTO_CYCLE
     if (g_tag_sw && type == MSG_TYPE_WAKEUP) {
         csk_gpio_pin_write();
     }
+#endif
 
     LISA_LOGD(MSG_TAG, "type=%d len=%ld", type, len);
     uint8_t *result = NULL;
@@ -96,6 +101,10 @@ void ls_app_msg_send_type(LS_APP_MSG_TYPE type)
 void shell_user_set_tag_sw(uint8_t sw)
 {
 	SHELL_ITEM_EXPORT("user.settag", shell_user_set_tag_sw, "lisa tag switch (0/1)");
+#if TRAFFIC_LIGHT_AUTO_CYCLE
+	(void)sw;
+#else
 	g_tag_sw = sw;
+#endif
     // csk_gpio_pin_write();
 }

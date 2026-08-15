@@ -154,26 +154,26 @@ static void traffic_light_draw_right(ws2812_rgb_t color)
 }
 
 #if TRAFFIC_LIGHT_AUTO_CYCLE
-static void traffic_light_show_direction(traffic_light_state_t state, ws2812_rgb_t color)
+static void traffic_light_show_yellow_direction(traffic_light_state_t state)
 {
     traffic_light_render_begin();
     traffic_light_fill(k_black);
 
     switch (state) {
     case TRAFFIC_LIGHT_STRAIGHT:
-        traffic_light_draw_straight(color);
+        traffic_light_draw_straight(k_yellow);
         break;
     case TRAFFIC_LIGHT_LEFT:
-        traffic_light_draw_left(color);
+        traffic_light_draw_left(k_yellow);
         break;
     case TRAFFIC_LIGHT_RIGHT:
-        traffic_light_draw_right(color);
+        traffic_light_draw_right(k_yellow);
         break;
     default:
         break;
     }
 
-    ws2812_show_rgb_frame(s_frame, WS2812_LED_COUNT);
+    ws2812_show_rgb_frame_yellow(s_frame, WS2812_LED_COUNT);
     traffic_light_render_end();
 }
 #endif
@@ -248,8 +248,8 @@ void traffic_light_process(void)
 
     if (s_cycle_stage == TRAFFIC_LIGHT_CYCLE_WAIT_YELLOW) {
         s_cycle_stage = TRAFFIC_LIGHT_CYCLE_WAIT_RED;
-        s_cycle_deadline = now + pdMS_TO_TICKS(TRAFFIC_LIGHT_PERIOD_MS);
-        traffic_light_show_direction(s_cycle_direction, k_yellow);
+        traffic_light_show_yellow_direction(s_cycle_direction);
+        s_cycle_deadline = xTaskGetTickCount() + pdMS_TO_TICKS(TRAFFIC_LIGHT_PERIOD_MS);
         (void)xTaskResumeAll();
         return;
     }
