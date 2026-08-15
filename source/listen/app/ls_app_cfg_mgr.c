@@ -374,7 +374,7 @@ bool parser_quit_asr_item(const char *keyword, const ls_uart_msg_t *recv_msg)
             if (keyword_compare(keyword, strlen(keyword), (const char *)tmp_item.keywords, tmp_item.keyword_size)) {
                 active_play_audios(tmp_item.play_type, (const char *)tmp_item.play_audio, tmp_item.audio_size);
                 uart_send_data((const char *)tmp_item.send_pro_buf, tmp_item.send_pro_len);
-                traffic_light_show(TRAFFIC_LIGHT_OFF);
+                traffic_light_stop();
                 if (tmp_item.play_type == 0) send_to_algo_task_msg(e_algo_msg_type_esr_wakeup_mode);
 				return true;
 			}

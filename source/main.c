@@ -5,6 +5,7 @@
 #include "task_algo.h"
 #include "ls_app_device.h"
 #include "traffic_light.h"
+#include "traffic_light_config.h"
 
 #define ALGO_RAM_INST_MEM_SIZE      (113792) //115840 - 2k
 #define ALGO_VOICE_BIN_MEM_SIZE     (2048) //2k
@@ -15,6 +16,25 @@ static uint8_t s_algo_share_mem[ALGO_RAM_SHARE_MEM_SIZE] __attribute__((aligned(
 static uint8_t s_algo_voice_mem[ALGO_VOICE_BIN_MEM_SIZE] __attribute__((aligned(32)));
 
 extern void shell_heap_summary(void);
+
+#if TRAFFIC_LIGHT_AUTO_CYCLE
+#define APP_SERVICE_SLICE_MS 10U
+
+static void app_sleep(uint32_t duration_ms)
+{
+    while (duration_ms > 0U) {
+        const uint32_t slice_ms = duration_ms > APP_SERVICE_SLICE_MS
+                                ? APP_SERVICE_SLICE_MS
+                                : duration_ms;
+
+        x_task_sleep(slice_ms);
+        traffic_light_process();
+        duration_ms -= slice_ms;
+    }
+}
+#else
+#define app_sleep(duration_ms) x_task_sleep(duration_ms)
+#endif
 
 int32_t get_vcc_power()
 {
@@ -51,7 +71,7 @@ int main(int argc, char *argv[])
     while (1) {
         if (get_adc_cnt < 3) {
             get_adc_cnt++;
-            x_task_sleep(500);
+            app_sleep(500);
             adc_power = get_vcc_power();
             // printk("==============adc_power : %d==============\n", adc_power);
         } else if (get_adc_cnt == 3) {
@@ -62,7 +82,7 @@ int main(int argc, char *argv[])
                 IP_AON_CTRL->REG_AON_TUNE1.bit.TUNE_HVLDO_VIO = 0x18;
             }
         } else {
-            x_task_sleep(5000);
+            app_sleep(5000);
         }
         // shell_heap_summary();
     }

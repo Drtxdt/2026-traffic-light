@@ -12,7 +12,9 @@ typedef enum {
 } traffic_light_state_t;
 
 void traffic_light_init(void);
+void traffic_light_process(void);
 void traffic_light_show(traffic_light_state_t state);
 void traffic_light_show_command_index(uint32_t index);
+void traffic_light_stop(void);
 
 #endif
