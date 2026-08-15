@@ -185,11 +185,25 @@ void ws2812_show_rgb_frame_yellow(const ws2812_rgb_t *pixels, uint32_t count)
     __RV_CSR_CLEAR(CSR_MSTATUS, MSTATUS_MIE);
     IP_GPIO->REG_DOUTCLEAR.all = WS2812_PIN_MASK;
     ws2812_wait_cycles(s_cycles_reset);
-    for (uint32_t i = 0; i < count; i++) {
+
+    for (uint32_t i = 0U; i < count; i++) {
         ws2812_send_yellow_grb(pixels[i].green, pixels[i].red, pixels[i].blue);
     }
     IP_GPIO->REG_DOUTCLEAR.all = WS2812_PIN_MASK;
     ws2812_wait_cycles(s_cycles_reset);
+
+    /*
+     * The first physical LED is the panel's top-right pixel.  It is the only
+     * LED affected by the first yellow-profile word after reset.  Correct it
+     * with one normal-timing pixel after the complete yellow frame has
+     * latched.  The first LED consumes these 24 bits, so downstream LEDs keep
+     * their already-latched yellow-frame values.
+     */
+    if (count != 0U) {
+        ws2812_send_grb(pixels[0].green, pixels[0].red, pixels[0].blue);
+        IP_GPIO->REG_DOUTCLEAR.all = WS2812_PIN_MASK;
+        ws2812_wait_cycles(s_cycles_reset);
+    }
 
     if (mstatus & MSTATUS_MIE) {
         __RV_CSR_SET(CSR_MSTATUS, MSTATUS_MIE);
